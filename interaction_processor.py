@@ -15,3 +15,23 @@ class inputProcessor:
         else:
             print("Invalid language, please try again.")
             self.stdlanginput()
+    def stdforminput(self):
+        userin = input()
+        formatted_form = userin.lower()
+        if formatted_form == "yo" or formatted_form == "i":
+            return "I"
+        elif formatted_form == "tu" or formatted_form == "you":
+            return "You"
+        elif formatted_form == "el":
+            return "He"
+        elif formatted_form == "ella":
+            return "She"
+        elif formatted_form == "usted":
+            return "He"
+        elif formatted_form == "nosotros" or formatted_form == "nosotras":
+            return "We"
+        elif formatted_form == "ellos" or formatted_form == "ellas":
+            return "They"
+
+
+

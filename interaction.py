@@ -4,6 +4,7 @@ from tqdm import tqdm
 from time import sleep
 from interaction_processor import inputProcessor
 
+
 class UserInteractor:
     def __init__(self, translator, inputprocessor):
         self.translator = translator
@@ -12,7 +13,7 @@ class UserInteractor:
     def greet(self):
         for i in tqdm(range(100), desc="Loading Terminal Interface"):
             sleep(0.005)
-        art.tprint("Transformativo AI")
+        art.tprint("Transformativo AI V2")
         sleep(0.8)
         print(f"*Version: {self.translator.version}* Made by: {self.translator.author}")
         if self.translator.isStable:
@@ -20,12 +21,26 @@ class UserInteractor:
         else:
             print("This is an UNSTABLE build, expect bugs and crashes.")
 
+    def change_lang(self):
+        print("Choose a language to translate from: ")
+        source = self.inputProcessor.stdlanginput()
+        print("Choose a language to translate to: ")
+        target = self.inputProcessor.stdlanginput()
+        self.translator.source = source
+        self.translator.target = target
+        self.translator.model_name = f"Helsinki-NLP/opus-mt-{self.translator.source}-{self.translator.target}"
+        self.translator.tokenizer = AutoTokenizer.from_pretrained(self.translator.model_name)
+        self.translator.model = AutoModelForSeq2SeqLM.from_pretrained(self.translator.model_name)
+        for i in tqdm(range(100), desc="Loading NEW Language Model"):
+            sleep(0.005)
+        art.tprint("Language changed!")
+
     def interactionloop(self):
         while True:
             print()
             print(f"Current Language: {self.translator.source} -> {self.translator.target}")
             print()
-            print("Commands: 1. translate, 2. choose a different language, 3. exit")
+            print("Commands: 1. translate, 2. conjugator, 3. choose a different language, 4. exit")
             userin = input()
             if userin == "1":
                 print("Enter text to translate: ")
@@ -40,21 +55,17 @@ class UserInteractor:
                     art.tprint("Thank You!")
                     break
             elif userin == "2":
-                print("Choose a language to translate from: ")
-                source = self.inputProcessor.stdlanginput()
-                print("Choose a language to translate to: ")
-                target = self.inputProcessor.stdlanginput()
-                self.translator.source = source
-                self.translator.target = target
-                self.translator.model_name = f"Helsinki-NLP/opus-mt-{self.translator.source}-{self.translator.target}"
-                self.translator.tokenizer = AutoTokenizer.from_pretrained(self.translator.model_name)
-                self.translator.model = AutoModelForSeq2SeqLM.from_pretrained(self.translator.model_name)
-                for i in tqdm(range(100), desc="Loading NEW Language Model"):
-                    sleep(0.005)
-                art.tprint("Language changed!")
+                print("Enter form, remember to use the correct form: ")
+                form = self.inputProcessor.stdforminput()
+                print("Enter verb: ")
+                verb = input()
+                print(self.translator.conjugate(form, verb))
+
+            elif userin == "3":
+                self.change_lang()
                 sleep(0.8)
                 continue
-            elif userin == "3":
+            elif userin == "4":
                 print("Exiting...")
                 art.tprint("Thank You!")
                 break
